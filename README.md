@@ -8,10 +8,6 @@
 
 ---
 
-## 📸 Screenshots
-
----
-
 ## 🛠️ Tech Stack
 
 * **Framework:** ASP.NET Core 8 MVC
