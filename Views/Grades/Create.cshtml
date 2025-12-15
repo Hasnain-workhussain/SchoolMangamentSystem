@@ -1,0 +1,85 @@
+﻿@model SchoolMangamentSystem.ViewModels.Grade
+
+@{
+    ViewData["Title"] = "Add Grade";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="max-w-2xl mx-auto py-8 px-4">
+
+    <div class="mb-8">
+        <h2 class="text-3xl font-bold text-white">Add Grades</h2>
+        <p class="text-slate-400 mt-2">Enter marks to calculate GPA</p>
+    </div>
+
+    @if (ViewBag.DebugErrors != null)
+    {
+        <div class="bg-red-600 text-white p-4 rounded-lg mb-6 border-2 border-red-400 font-bold">
+            ⚠ ERROR FOUND: @ViewBag.DebugErrors
+        </div>
+    }
+
+    <div asp-validation-summary="All" class="text-red-500 bg-red-100 p-4 rounded mb-4"></div>
+
+    <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-8">
+        <form asp-action="Create" method="post" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label asp-for="StudentId" class="block text-sm font-medium text-slate-300 mb-2">Student</label>
+                    <select asp-for="StudentId" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-white" asp-items="ViewBag.StudentList">
+                        <option value="">-- Select Student --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label asp-for="CourseName" class="block text-sm font-medium text-slate-300 mb-2">Course</label>
+                    <select asp-for="CourseName" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-white" asp-items="ViewBag.Courses">
+                        <option value="">-- Select Course --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label asp-for="MidTerm" class="block text-sm font-medium text-slate-300 mb-2">Mid-Term</label>
+                    <input asp-for="MidTerm" id="MidTerm" type="number" step="0.01" class="score-input w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-white" />
+                </div>
+                <div>
+                    <label asp-for="Quiz" class="block text-sm font-medium text-slate-300 mb-2">Quiz</label>
+                    <input asp-for="Quiz" id="Quiz" type="number" step="0.01" class="score-input w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-white" />
+                </div>
+                <div>
+                    <label asp-for="FinalTerm" class="block text-sm font-medium text-slate-300 mb-2">Final</label>
+                    <input asp-for="FinalTerm" id="FinalTerm" type="number" step="0.01" class="score-input w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-white" />
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="GPA" class="block text-sm font-medium text-slate-300 mb-2">GPA</label>
+                <input asp-for="GPA" id="GPA" type="number" step="0.01" readonly class="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 px-4 text-green-400 font-bold" />
+            </div>
+
+            <div class="pt-4 border-t border-slate-700 mt-4 flex gap-4">
+                <a asp-action="Index" class="w-1/3 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg text-center">Cancel</a>
+                <button type="submit" class="w-2/3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg">Calculate & Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll(".score-input");
+        const gpaOutput = document.getElementById("GPA");
+
+        function calculateGPA() {
+            const mid = parseFloat(document.getElementById("MidTerm").value) || 0;
+            const quiz = parseFloat(document.getElementById("Quiz").value) || 0;
+            const final = parseFloat(document.getElementById("FinalTerm").value) || 0;
+            const gpa = ((mid + quiz + final) / 3.0) / 20.0;
+            gpaOutput.value = gpa.toFixed(2);
+        }
+        inputs.forEach(input => input.addEventListener("input", calculateGPA));
+    });
+</script>

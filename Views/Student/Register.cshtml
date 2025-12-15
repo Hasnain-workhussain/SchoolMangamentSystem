@@ -1,0 +1,128 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | EduSymphony</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        secondary: { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(to right, #0ea5e9, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+
+    <div class="w-full max-w-md space-y-8">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold gradient-text mb-2">Create Account</h1>
+            <p class="text-sm text-gray-400">Join EduSymphony today</p>
+        </div>
+
+        <form asp-action="Register" method="post" class="mt-8 space-y-6 bg-gray-800 rounded-2xl p-8 shadow-lg">
+            @Html.AntiForgeryToken()
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="user" class="w-4 h-4"></i></span>
+                    <input name="fullName" type="text" required class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="John Doe" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="mail" class="w-4 h-4"></i></span>
+                        <input name="email" type="email" required class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="email@edu.com" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="phone" class="w-4 h-4"></i></span>
+                        <input name="phone" type="text" required class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="123-456-7890" />
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Select Course</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="book" class="w-4 h-4"></i></span>
+                    <select name="courseName" class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 appearance-none">
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="English Literature">English Literature</option>
+                    </select>
+                    <span class="absolute right-3 top-3.5 text-gray-500 pointer-events-none"><i data-feather="chevron-down" class="w-4 h-4"></i></span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="lock" class="w-4 h-4"></i></span>
+                    <input name="password" type="password" required class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="Create password" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3.5 text-gray-500"><i data-feather="lock" class="w-4 h-4"></i></span>
+                    <input name="confirmPassword" type="password" required class="w-full bg-gray-900 border border-gray-700 rounded-xl py-3 pl-10 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="Confirm password" />
+                </div>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                    <i data-feather="alert-circle" class="w-4 h-4"></i>
+                    @ViewBag.Error
+                </div>
+            }
+
+            <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 text-white font-bold py-3 rounded-xl shadow-lg transform transition hover:scale-[1.02] flex items-center justify-center gap-2">
+                <span>Create Account</span>
+                <i data-feather="arrow-right" class="w-4 h-4"></i>
+            </button>
+
+            <div class="text-center mt-6">
+                <p class="text-gray-400 text-sm">
+                    Already have an account?
+                    <a asp-action="Login" class="text-primary-400 hover:text-primary-300 font-medium transition-colors">Sign in here</a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

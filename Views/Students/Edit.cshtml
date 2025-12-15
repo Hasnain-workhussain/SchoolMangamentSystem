@@ -1,0 +1,108 @@
+﻿@model SchoolMangamentSystem.ViewModels.Student
+
+@{
+    ViewData["Title"] = "Edit Student";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="max-w-2xl mx-auto py-8 px-4">
+    <div class="mb-8">
+        <h2 class="text-3xl font-bold text-white">Edit Student</h2>
+        <p class="text-slate-400 mt-2">Update the student's information below.</p>
+    </div>
+
+    <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-8">
+        <form asp-action="Edit" method="post" class="space-y-6">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div>
+                <label asp-for="FullName" class="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-slate-500"><i data-feather="user" class="w-4 h-4"></i></span>
+                    <input asp-for="FullName" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                </div>
+                <span asp-validation-for="FullName" class="text-red-400 text-xs mt-1 block"></span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500"><i data-feather="mail" class="w-4 h-4"></i></span>
+                        <input asp-for="Email" type="email" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-red-400 text-xs mt-1 block"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500"><i data-feather="lock" class="w-4 h-4"></i></span>
+                        <input asp-for="Password" type="text" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-red-400 text-xs mt-1 block"></span>
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="PhoneNumber" class="block text-sm font-medium text-slate-300 mb-2">Phone</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 text-slate-500"><i data-feather="phone" class="w-4 h-4"></i></span>
+                    <input asp-for="PhoneNumber" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                </div>
+                <span asp-validation-for="PhoneNumber" class="text-red-400 text-xs mt-1 block"></span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label asp-for="CourseName" class="block text-sm font-medium text-slate-300 mb-2">Course</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500"><i data-feather="book" class="w-4 h-4"></i></span>
+                        <select asp-for="CourseName" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 appearance-none">
+                          <option value="Computer Science">Computer Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Biology">Biology</option>
+                            <option value="Business">Business</option>
+                        </select>
+                        <span class="absolute right-3 top-3 text-slate-500 pointer-events-none"><i data-feather="chevron-down" class="w-4 h-4"></i></span>
+                    </div>
+                    <span asp-validation-for="CourseName" class="text-red-400 text-xs mt-1 block"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Status" class="block text-sm font-medium text-slate-300 mb-2">Status</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500"><i data-feather="activity" class="w-4 h-4"></i></span>
+                        <select asp-for="Status" class="w-full bg-slate-900 border border-slate-600 rounded-lg py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-indigo-500 appearance-none">
+                            <option value="Active">Active</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Graduated">Graduated</option>
+                            <option value="On Leave">On Leave</option>
+                        </select>
+                        <span class="absolute right-3 top-3 text-slate-500 pointer-events-none"><i data-feather="chevron-down" class="w-4 h-4"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-4 pt-6 border-t border-slate-700">
+                <a asp-action="Index" class="text-slate-400 hover:text-white text-sm font-medium transition-colors px-4 py-2">Cancel</a>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2">
+                    <i data-feather="save" class="w-4 h-4"></i>
+                    Update Student
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        feather.replace();
+    </script>
+}
+}

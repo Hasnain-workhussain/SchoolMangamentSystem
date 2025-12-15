@@ -1,0 +1,212 @@
+﻿@using SchoolMangamentSystem.Data
+@using SchoolMangamentSystem.ViewModels
+@inject SchoolDbContext _context
+
+@{
+    // Fetch the current user (simulated)
+    var currentUser = _context.Admins.FirstOrDefault();
+
+    string initials = "A";
+    string fullName = "Admin";
+    string role = "Administrator";
+
+    // FIX: Use 'string?' to allow null values
+    string? imageSrc = null;
+
+    if (currentUser != null)
+    {
+        fullName = currentUser.FullName ?? "Admin";
+        role = currentUser.Role ?? "Administrator";
+
+        if (!string.IsNullOrEmpty(fullName))
+        {
+            initials = fullName.Substring(0, 1).ToUpper();
+        }
+
+        // Check if ProfilePicture exists and convert to Base64
+        if (currentUser.ProfilePicture != null && currentUser.ProfilePicture.Length > 0)
+        {
+            imageSrc = $"data:image/jpeg;base64,{Convert.ToBase64String(currentUser.ProfilePicture)}";
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>@ViewData["Title"] - EduSync Nexus</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 flex h-screen overflow-hidden">
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 border-r border-slate-700 transition-transform duration-300 transform -translate-x-full md:translate-x-0 flex flex-col">
+
+        <div class="h-16 flex items-center justify-between px-4 border-b border-slate-700 shrink-0">
+            <div class="flex items-center gap-2 font-bold text-lg tracking-wide">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500 text-white text-xs">EN</span>
+                <span>EduSymphony</span>
+            </div>
+            <button id="mobileSidebarClose" class="md:hidden p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white">
+                <i data-feather="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+
+            <a asp-controller="Admin" asp-action="Dashboard"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors @(ViewData["Title"]?.ToString() == "Dashboard" ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-700 hover:text-white")">
+                <i data-feather="home" class="w-5 h-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+
+            <a asp-controller="Courses" asp-action="Index" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <i data-feather="book" class="w-5 h-5"></i>
+                <span class="font-medium">Courses</span>
+            </a>
+
+            <a asp-controller="Students" asp-action="Index" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <i data-feather="users" class="w-5 h-5"></i>
+                <span class="font-medium">Students</span>
+            </a>
+
+            <a asp-controller="Exams" asp-action="Index" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <i data-feather="calendar" class="w-5 h-5"></i>
+                <span class="font-medium">Exams</span>
+            </a>
+
+            <a asp-controller="Grades" asp-action="Index" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <i data-feather="award" class="w-5 h-5"></i>
+                <span class="font-medium">Grades</span>
+            </a>
+
+            <a asp-controller="Results" asp-action="Index" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <i data-feather="file-text" class="w-5 h-5"></i>
+                <span class="font-medium">Results</span>
+            </a>
+
+        </nav>
+
+        <div class="p-4 border-t border-slate-700 shrink-0">
+            <div class="text-xs text-slate-500 font-medium text-center">&copy; <span id="year"></span> EduSync Nexus</div>
+        </div>
+    </aside>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+    <div class="flex-1 flex flex-col min-h-screen transition-all duration-300 ml-0 md:ml-64 w-full">
+
+        <header class="h-16 flex items-center justify-between px-4 md:px-6 bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button id="mobileToggle" class="md:hidden p-2 rounded-md hover:bg-slate-800 text-slate-300">
+                    <i data-feather="menu" class="w-6 h-6"></i>
+                </button>
+                <h1 class="text-lg font-semibold text-white">@ViewData["Title"]</h1>
+            </div>
+
+            <div class="relative">
+                <button id="profileBtn" class="flex items-center gap-3 hover:bg-slate-800 py-1.5 px-2 rounded-full transition-colors focus:outline-none group">
+
+                    @if (imageSrc != null)
+                    {
+                        <img src="@imageSrc" alt="@fullName" class="w-8 h-8 rounded-full object-cover shadow-sm border-2 border-transparent group-hover:border-slate-700 transition-all" />
+                    }
+                    else
+                    {
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm border-2 border-transparent group-hover:border-slate-700 transition-all">
+                            @initials
+                        </div>
+                    }
+
+                    <div class="hidden sm:block text-left">
+                        <div class="text-sm font-medium text-white">@fullName</div>
+                        <div class="text-[10px] text-slate-400">@role</div>
+                    </div>
+                    <i data-feather="chevron-down" class="w-4 h-4 text-slate-400 hidden sm:block transition-transform duration-200" id="chevronIcon"></i>
+                </button>
+
+                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-lg py-1 z-50 transform origin-top-right transition-all duration-200">
+                    <div class="px-4 py-3 border-b border-slate-700 md:hidden">
+                        <p class="text-sm text-white font-medium">@fullName</p>
+                        <p class="text-xs text-slate-400">@role</p>
+                    </div>
+
+                    <a asp-controller="Account" asp-action="Profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                        <i data-feather="user" class="w-4 h-4"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    <a asp-controller="Admin" asp-action="Dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                        <i data-feather="home" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <div class="border-t border-slate-700 my-1"></div>
+
+                    <a asp-controller="Account" asp-action="Logout" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300 transition-colors">
+                        <i data-feather="log-out" class="w-4 h-4"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-900 p-6">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            feather.replace();
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Mobile Sidebar Logic
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const closeBtn = document.getElementById('mobileSidebarClose');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            }
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+
+            if(mobileToggle) mobileToggle.addEventListener('click', openSidebar);
+            if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if(overlay) overlay.addEventListener('click', closeSidebar);
+
+            // --- PROFILE DROPDOWN LOGIC ---
+            const profileBtn = document.getElementById('profileBtn');
+            const dropdown = document.getElementById('userDropdown');
+            const chevron = document.getElementById('chevronIcon');
+
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('hidden');
+                if(chevron) {
+                    chevron.style.transform = dropdown.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                    if(chevron) chevron.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

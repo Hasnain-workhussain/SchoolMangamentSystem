@@ -1,0 +1,152 @@
+﻿@model SchoolMangamentSystem.ViewModels.ResultViewModel
+
+@{
+    ViewData["Title"] = "Student Result Card";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="p-6 max-w-5xl mx-auto">
+
+    <div class="mb-8 print:hidden">
+        <h1 class="text-3xl font-bold text-white mb-4">Generate Result Card</h1>
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+            <form asp-action="Index" method="get" class="flex gap-4">
+                <div class="flex-1 relative">
+                    <i data-feather="search" class="absolute left-3 top-3 text-slate-400 w-4 h-4"></i>
+                    <input type="text" name="searchEmail" placeholder="Enter Student Name or Email..."
+                           class="w-full pl-10 px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                </div>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors shadow-lg shadow-indigo-500/20">
+                    Generate Result
+                </button>
+            </form>
+            @if (ViewBag.Message != null)
+            {
+                <p class="text-red-400 mt-3 text-sm flex items-center gap-2">
+                    <i data-feather="alert-circle" class="w-4 h-4"></i> @ViewBag.Message
+                </p>
+            }
+        </div>
+    </div>
+
+    @if (Model.Student != null)
+    {
+        <div id="printArea" class="bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl">
+
+            <div class="bg-indigo-900 text-white p-8 flex justify-between items-start">
+                <div>
+                    <h2 class="text-3xl font-bold uppercase tracking-wider">Official Transcript</h2>
+                    <p class="opacity-80 mt-1">EduSync Nexus Institute</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold">@Model.TotalGPA</div>
+                    <div class="text-xs uppercase opacity-70 tracking-widest">CGPA</div>
+                </div>
+            </div>
+
+            <div class="p-8 border-b border-slate-200 bg-slate-50">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Student Name</p>
+                        <p class="font-semibold text-lg">@Model.Student.FullName</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Student ID</p>
+                        <p class="font-mono text-lg">@Model.Student.Id.ToString("D5")</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Course</p>
+                        <p class="font-semibold text-lg">@Model.Student.CourseName</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider">Status</p>
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-700">@Model.Student.Status</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b-2 border-slate-100 text-xs text-slate-400 uppercase tracking-wider">
+                            <th class="pb-3 pl-2">Subject / Course</th>
+                            <th class="pb-3 text-center">Mid Term</th>
+                            <th class="pb-3 text-center">Quiz</th>
+                            <th class="pb-3 text-center">Final</th>
+                            <th class="pb-3 text-center">Total</th>
+                            <th class="pb-3 text-right pr-2">GPA</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @foreach (var grade in Model.Grades)
+                        {
+                            <tr class="border-b border-slate-50 hover:bg-slate-50">
+                                <td class="py-4 pl-2 font-medium">@grade.CourseName</td>
+                                <td class="py-4 text-center text-slate-500">@grade.MidTerm</td>
+                                <td class="py-4 text-center text-slate-500">@grade.Quiz</td>
+                                <td class="py-4 text-center text-slate-500">@grade.FinalTerm</td>
+
+                                <td class="py-4 text-center font-semibold">
+                                    @(((grade.MidTerm + grade.Quiz + grade.FinalTerm) / 3.0).ToString("F1")) <span class="text-slate-400 font-normal">%</span>
+                                </td>
+
+                                <td class="py-4 text-right pr-2 font-bold text-indigo-600">@grade.GPA</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bg-slate-900 text-white p-6 flex justify-between items-center print:bg-slate-900">
+                <div class="text-xs text-slate-400">
+                    Generated on @DateTime.Now.ToString("MMMM dd, yyyy")
+                </div>
+                <div class="flex gap-8 text-right">
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase">Total Marks</p>
+                        <p class="font-bold">@Model.ObtainedMarks.ToString("F1") / @Model.TotalMarks.ToString("F0")</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase">Percentage</p>
+                        <p class="font-bold text-green-400">@Model.Percentage%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 text-right print:hidden">
+            <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-lg font-medium inline-flex items-center gap-2 transition-colors">
+                <i data-feather="printer" class="w-4 h-4"></i>
+                Print Result Card
+            </button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => feather.replace());
+    </script>
+    <style>
+        @@media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            /* Hide sidebar and headers when printing */
+            nav, header, aside {
+                display: none !important;
+            }
+        }
+    </style>
+}

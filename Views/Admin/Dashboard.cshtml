@@ -1,0 +1,165 @@
+﻿@model SchoolMangamentSystem.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script id="data-att-labels" type="application/json">@Json.Serialize(Model.AttendanceLabels)</script>
+<script id="data-att-values" type="application/json">@Json.Serialize(Model.AttendanceData)</script>
+<script id="data-grade-labels" type="application/json">@Json.Serialize(Model.GradeLabels)</script>
+<script id="data-grade-values" type="application/json">@Json.Serialize(Model.GradeData)</script>
+
+<div class="grid gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-slate-800 rounded-xl p-5 shadow-sm border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-slate-400">Total Students</div>
+                    <div class="text-2xl font-semibold mt-1">@Model.TotalStudents.ToString("N0")</div>
+                </div>
+                <div class="p-3 rounded-xl bg-blue-900/50">
+                    <i data-feather="users" class="w-6 h-6 text-blue-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-5 shadow-sm border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-slate-400">Active Courses</div>
+                    <div class="text-2xl font-semibold mt-1">@Model.ActiveCourses</div>
+                </div>
+                <div class="p-3 rounded-xl bg-green-900/50">
+                    <i data-feather="book" class="w-6 h-6 text-green-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-5 shadow-sm border-l-4 border-indigo-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-slate-400">New Enrollments</div>
+                    <div class="text-2xl font-semibold mt-1">@Model.NewEnrollments</div>
+                </div>
+                <div class="p-3 rounded-xl bg-indigo-900/50">
+                    <i data-feather="user-plus" class="w-6 h-6 text-indigo-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-5 shadow-sm border-l-4 border-yellow-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-slate-400">Teachers</div>
+                    <div class="text-2xl font-semibold mt-1">@Model.TotalTeachers</div>
+                </div>
+                <div class="p-3 rounded-xl bg-yellow-900/50">
+                    <i data-feather="user-check" class="w-6 h-6 text-yellow-300"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section class="bg-slate-800 rounded-xl p-6 shadow-sm flex flex-col">
+            <h3 class="text-base font-medium text-slate-100 mb-4">Attendance Trends</h3>
+            <div class="relative w-full flex-grow min-h-[300px]">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-slate-800 rounded-xl p-6 shadow-sm flex flex-col">
+            <h3 class="text-base font-medium text-slate-100 mb-4">Grades Trends</h3>
+            <div class="relative w-full flex-grow min-h-[300px]">
+                <canvas id="gradesChart"></canvas>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Helper function to read JSON from script tags
+            function getJsonData(id) {
+                const el = document.getElementById(id);
+                return el ? JSON.parse(el.textContent) : [];
+            }
+
+            // 2. Load Data safely
+            const attLabels = getJsonData('data-att-labels');
+            const attData = getJsonData('data-att-values');
+            const gradeLabels = getJsonData('data-grade-labels');
+            const gradeData = getJsonData('data-grade-values');
+
+            // 3. Render Attendance Chart
+            const ctx1 = document.getElementById('attendanceChart');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: attLabels,
+                        datasets: [{
+                            label: 'Attendance %',
+                            data: attData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                min: 60, max: 100,
+                                grid: { color: '#334155' },
+                                ticks: { color: '#94a3b8' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. Render Grades Chart
+            const ctx2 = document.getElementById('gradesChart');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: gradeLabels,
+                        datasets: [{
+                            label: 'Avg Score',
+                            data: gradeData,
+                            backgroundColor: ['#34d399', '#60a5fa', '#a78bfa', '#f97316', '#fb7185'],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true, max: 100,
+                                grid: { color: '#334155' },
+                                ticks: { color: '#94a3b8' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

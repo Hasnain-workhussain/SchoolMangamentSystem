@@ -1,0 +1,49 @@
+﻿@model SchoolMangamentSystem.ViewModels.Admin
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Register Admin";
+}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Register Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 h-screen flex items-center justify-center">
+
+    <div class="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-center">Create Admin User</h2>
+
+        <form asp-action="Register" method="post" class="space-y-4">
+
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Full Name</label>
+                <input asp-for="FullName" class="w-full bg-slate-900 border border-slate-600 rounded p-2 focus:border-indigo-500 outline-none" placeholder="Davey Jones" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Email</label>
+                <input asp-for="Email" type="email" class="w-full bg-slate-900 border border-slate-600 rounded p-2 focus:border-indigo-500 outline-none" placeholder="admin@school.com" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-slate-400 mb-1">Password</label>
+                <input asp-for="Password" type="password" class="w-full bg-slate-900 border border-slate-600 rounded p-2 focus:border-indigo-500 outline-none" placeholder="******" />
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded transition">
+                Create Account
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a asp-action="Login" class="text-indigo-400 hover:text-indigo-300 text-sm">Back to Login</a>
+        </div>
+    </div>
+
+</body>
+</html>
